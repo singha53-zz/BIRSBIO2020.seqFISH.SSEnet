@@ -61,7 +61,10 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="articles/seqfish_ssenet.html">seqFISH and scRNASeq integration using Semi-Supervised Elastic Net (ssenet)</a>
+      <a href="articles/seqfish_ssenet_data_analysis.html">seqFISH and scRNASeq integration using Semi-Supervised Elastic Net (SSEnet) - data analysis</a>
+    </li>
+    <li>
+      <a href="articles/seqfish_ssenet_data_compilation.html">seqFISH and scRNASeq integration using Semi-Supervised Elastic Net (ssenet) - data compilation</a>
     </li>
   </ul>
 </li>
@@ -85,59 +88,126 @@
 
       </header><div class="row">
   <div class="contents col-md-9">
-<div id="buildabiocworkshop2020" class="section level1">
+
+<div id="birsbio2020-seqfishscrnaseq-integration" class="section level1">
 <div class="page-header"><h1 class="hasAnchor">
-<a href="#buildabiocworkshop2020" class="anchor"></a>BuildABiocWorkshop2020</h1></div>
-<p>This package is a template for building a Bioconductor 2020 workshop. The package includes Github actions to:</p>
-<ol>
-<li>Set up bioconductor/bioconductor_docker:devel on Github resources</li>
-<li>Install package dependencies for your package (based on the <code>DESCRIPTION</code> file)</li>
-<li>Run <code><a href="https://rdrr.io/pkg/rcmdcheck/man/rcmdcheck.html">rcmdcheck::rcmdcheck</a></code>
-</li>
-<li>Build a pkgdown website and push it to github pages</li>
-<li>Build a docker image with the installed package and dependencies</li>
-</ol>
-<div id="responsibilities" class="section level2">
+<a href="#birsbio2020-seqfishscrnaseq-integration" class="anchor"></a>BIRSBIO2020 seqFISH+scRNASeq integration</h1></div>
+<p>This repo houses the analysis for the Abstract Submission to #BIRSBioIntegration <a href="https://www.birs.ca/events/2020/5-day-workshops/20w5197">Mathematical Frameworks for Integrative Analysis of Emerging Biological Data Types</a></p>
+<div id="abstract" class="section level2">
 <h2 class="hasAnchor">
-<a href="#responsibilities" class="anchor"></a>Responsibilities</h2>
-<p>This year, package authors will be primarily responsible for:</p>
-<ol>
-<li>Creating a landing site of their choosing for their workshops (a website). This website should be listed in the <code>DESCRIPTION</code> file as the <code>URL</code>.</li>
-<li>Creating a docker image that will contain workshop materials and the installed packages necessary to run those materials. The name of the resulting docker image, including “tag” if desired, should be listed in a non-standard tag, <code>DockerImage:</code> in the <code>DESCRIPTION</code> file.</li>
-</ol>
-<p>Both of those tasks can be accomplished using the Github actions included in this template package.</p>
+<a href="#abstract" class="anchor"></a>Abstract</h2>
+<div id="your-name" class="section level3">
+<h3 class="hasAnchor">
+<a href="#your-name" class="anchor"></a>Your Name</h3>
+<blockquote>
+<p>Amrit Singh</p>
+</blockquote>
 </div>
-<div id="details" class="section level2">
+<div id="slack-name-on-birsbiointegration" class="section level3">
+<h3 class="hasAnchor">
+<a href="#slack-name-on-birsbiointegration" class="anchor"></a>Slack name on #BIRSBioIntegration</h3>
+<blockquote>
+<p>Amrit Singh</p>
+</blockquote>
+</div>
+<div id="your-position" class="section level3">
+<h3 class="hasAnchor">
+<a href="#your-position" class="anchor"></a>Your Position</h3>
+<blockquote>
+<p>trainee (post-doc)</p>
+</blockquote>
+</div>
+<div id="name-of-supervisor" class="section level3">
+<h3 class="hasAnchor">
+<a href="#name-of-supervisor" class="anchor"></a>Name of supervisor</h3>
+<blockquote>
+<p>Kim-Anh Le Cao/Bruce McManus</p>
+</blockquote>
+</div>
+<div id="affiliation" class="section level3">
+<h3 class="hasAnchor">
+<a href="#affiliation" class="anchor"></a>Affiliation</h3>
+<blockquote>
+<p>PROOF Centre of Excellence and The University of British Columbia</p>
+</blockquote>
+</div>
+<div id="email" class="section level3">
+<h3 class="hasAnchor">
+<a href="#email" class="anchor"></a>Email</h3>
+<blockquote>
+<p><a href="mailto:asingh@hli.ubc.ca">asingh@hli.ubc.ca</a></p>
+</blockquote>
+</div>
+<div id="co-authors" class="section level3">
+<h3 class="hasAnchor">
+<a href="#co-authors" class="anchor"></a>Co-authors</h3>
+<blockquote>
+<p>none</p>
+</blockquote>
+</div>
+<div id="which-datasets-did-you-select-for-analysis" class="section level3">
+<h3 class="hasAnchor">
+<a href="#which-datasets-did-you-select-for-analysis" class="anchor"></a>Which dataset(s) did you select for analysis?</h3>
+<blockquote>
+<p>Spatial transcriptomics: seqFISH + scRNA-seq</p>
+</blockquote>
+</div>
+<div id="why-did-you-select-this-datasets-for-analysis" class="section level3">
+<h3 class="hasAnchor">
+<a href="#why-did-you-select-this-datasets-for-analysis" class="anchor"></a>Why did you select this dataset(s) for analysis</h3>
+<blockquote>
+<p>recommended by supervisor</p>
+</blockquote>
+</div>
+<div id="what-integrative-data-analysis-question-have-you-addressed-with-the-selected-data-and-why" class="section level3">
+<h3 class="hasAnchor">
+<a href="#what-integrative-data-analysis-question-have-you-addressed-with-the-selected-data-and-why" class="anchor"></a>What integrative data analysis question have you addressed with the selected data and why?</h3>
+<blockquote>
+<p>Can scRNA-seq data be overlaid onto seqFISH for resolution enhancement?</p>
+</blockquote>
+<p>What are the advantages and performance of your approach? &gt; The published approach trained a multiclass SVM on the scRNAseq data and applied it to the seqFISH data to estimate the cell-types labels. My approach uses a penalized regression method (glmnet) with a semi-supervised appraoch in order to build a model using both the scRNAseq+seqFISH data. This strategy uses a recursive approach that invovles multiple rounds of training glmnet models using labeled data (label and imputed) and predicting the cell-type labels of unlabeled data. At each iteration, cell-type labels with high confidence (probability &gt; 0.5) are retained for the next iteration, where a new glmnet model is trained with the scRNAseq data and seqFISH data with imputed cell-type labels with high confidence. This process is repeated until all cell-types in the seqFISH data have been labeled or until 50 iterations have been reached (in order to reduce compute times). The advantage of this approach is that more data in used for model training such that the resulting model may generalize better to new data. The performance of this appraoch was estimated using cross-validation, using only the scRNAseq data as the test set.</p>
+</div>
+<div id="what-were-the-specific-challenges-you-have-encountered-so-far" class="section level3">
+<h3 class="hasAnchor">
+<a href="#what-were-the-specific-challenges-you-have-encountered-so-far" class="anchor"></a>What were the specific challenges you have encountered so far?</h3>
+<blockquote>
+<p>Compute times are significantly longer for the semi-supervised approach for model training. Thus, cross-validation takes even longer. The datasets are restricted to 113 genes and therefore the discovery space is very limited for the semi-supervised approach to learn classification rules that are superior to the supervised approach.</p>
+</blockquote>
+</div>
+<div id="how-are-you-going-to-address-those-challenges" class="section level3">
+<h3 class="hasAnchor">
+<a href="#how-are-you-going-to-address-those-challenges" class="anchor"></a>How are you going to address those challenges?</h3>
+<blockquote>
+<p>Cross-validation was parallelized such that each iteration of cross-validation was run on an independent cpu thread. If additional data is available for this study it may be better than the current results given that the genes are limited to those identified using the scRNAseq data only.</p>
+</blockquote>
+</div>
+<div id="link-to-your-preliminary-code-and-results-on-a-github-account-optional" class="section level3">
+<h3 class="hasAnchor">
+<a href="#link-to-your-preliminary-code-and-results-on-a-github-account-optional" class="anchor"></a>Link to your preliminary code and results on a Github account (optional)</h3>
+<blockquote>
+<p><a href="https://github.com/singha53/ssenet" class="uri">https://github.com/singha53/ssenet</a></p>
+</blockquote>
+</div>
+<div id="additional-information-you-would-like-the-organizers-to-know" class="section level3">
+<h3 class="hasAnchor">
+<a href="#additional-information-you-would-like-the-organizers-to-know" class="anchor"></a>Additional information you would like the organizers to know</h3>
+<blockquote>
+<p>This is my first time looking at single cell data and this opportunity would expose me to knew methods, technologies and research in this field.</p>
+</blockquote>
+</div>
+</div>
+<div id="references" class="section level2">
 <h2 class="hasAnchor">
-<a href="#details" class="anchor"></a>Details</h2>
-<p>For detailed instructions, see the <code>How to build a workshop</code> article/vignette.</p>
-</div>
-<div id="results-of-successful-deployment" class="section level2">
-<h2 class="hasAnchor">
-<a href="#results-of-successful-deployment" class="anchor"></a>Results of successful deployment</h2>
-<ul>
-<li>A working docker image that contains the installed package and dependencies.</li>
-<li>An up-to-date <code>pkgdown</code> website at <a href="https://YOURUSERNAME.github.io/YOURREPOSITORYNAME/" class="uri">https://YOURUSERNAME.github.io/YOURREPOSITORYNAME/</a>
-</li>
-<li>Docker image will be tagged with <code>latest</code>, <code>sha-XXXXXX</code> where <code>XXXXXX</code> is the hash of the current <code>master</code> commit, and <code>master</code>.</li>
-</ul>
-</div>
-<div id="to-use-the-resulting-image" class="section level2">
-<h2 class="hasAnchor">
-<a href="#to-use-the-resulting-image" class="anchor"></a>To use the resulting image:</h2>
-<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="ex">docker</span> run -e PASSWORD=<span class="op">&lt;</span>choose_a_password_for_rstudio<span class="op">&gt;</span> -p 8787:8787 YOURDOCKERIMAGENAME</code></pre></div>
-<p>Once running, navigate to <a href="https://localhost:8787/" class="uri">https://localhost:8787/</a> and then login with <code>rstudio</code>:<code>yourchosenpassword</code>.</p>
-<p>To try with <strong>this</strong> repository docker image:</p>
-<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="ex">docker</span> run -e PASSWORD=abc -p 8787:8787 seandavi/buildabiocworkshop2020</code></pre></div>
-<p><em>NOTE</em>: Running docker that uses the password in plain text like above exposes the password to others in a multi-user system (like a shared workstation or compute node). In practice, consider using an environment variable instead of plain text to pass along passwords and other secrets in docker command lines.</p>
-</div>
-<div id="whatcha-get" class="section level2">
-<h2 class="hasAnchor">
-<a href="#whatcha-get" class="anchor"></a>Whatcha get</h2>
-<p><a href="https://seandavi.github.io/BuildABiocWorkshop2020" class="uri">https://seandavi.github.io/BuildABiocWorkshop2020</a></p>
-<p><img src="https://github.com/seandavi/BuildABiocWorkshop2020/raw/master/inst/images/dockerhub_result.png" alt="dockerhub"></p>
+<a href="#references" class="anchor"></a>References</h2>
+<p>1) <a href="https://github.com/mabelc/SSC" class="uri">https://github.com/mabelc/SSC</a></p>
 </div>
 </div>
+<div id="data-files" class="section level1">
+<h1 class="hasAnchor">
+<a href="#data-files" class="anchor"></a><a href="https://github.com/BIRSBiointegration/Hackathon/tree/master/seqFISH">Data files</a>
+</h1>
+</div>
+
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
