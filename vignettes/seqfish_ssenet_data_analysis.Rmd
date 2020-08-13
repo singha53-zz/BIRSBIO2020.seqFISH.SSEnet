@@ -19,7 +19,9 @@ library(UpSetR);
 library(StatMatch) # gower.dist
 library(factoextra) # devtools::install_github("kassambara/factoextra")
 library(NMF) ## aheatmap
-
+library(ggalt)
+library("BIRSBIO2020.seqFISH.SSEnet")
+data("cortex"); data("qnmLabels"); data("coord");
 ```
 
 # Analysis for the Abstract Submission to #BIRSBioIntegration [Mathematical Frameworks for Integrative Analysis of Emerging Biological Data Types](https://www.birs.ca/events/2020/5-day-workshops/20w5197)
@@ -32,8 +34,6 @@ library(NMF) ## aheatmap
   * Applied the SVM classification model to the bias-correct, quantile normalized seqFISH data to assign cell types.
 
 ```{r}
-library(ssenet); ## devtools::install_github("singha53/ssenet")
-data("cortex"); data("qnmLabels"); data("coord");
 include_graphics(here::here("inst", "extdata", "suppTable2.png"))
 
 selectedGenes <- c("fbll1", "itpr2", "vps13c", "tnfrsf1b", "sox2",
@@ -99,7 +99,6 @@ cortex$qnm$scrnaseq <- cortex$qnm$scrnaseq[keepIndices, ]
 cortex$cpm$scrnaseq <- cortex$cpm$scrnaseq[keepIndices, ]
 cortex$cpm_combat$scrnaseq <- cortex$cpm_combat$scrnaseq[keepIndices, ]
 cortex$cpm_eigen$scrnaseq <- cortex$cpm_eigen$scrnaseq[keepIndices, ]
-cortex$cpm_pca$scrnaseq <- cortex$cpm_pca$scrnaseq[keepIndices, ]
 cortex$cpm_pls$scrnaseq <- cortex$cpm_pls$scrnaseq[keepIndices, ]
 qnmLabels$scrnaseq <- qnmLabels$scrnaseq[keepIndices, ]
 qnmLabels$scrnaseq$V1 <- droplevels(qnmLabels$scrnaseq$V1)
@@ -110,11 +109,11 @@ qnmLabels$scrnaseq$V1 <- droplevels(qnmLabels$scrnaseq$V1)
 ```{r}
 data_norms <- names(cortex)
 cl <- parallel::makeCluster(mc <- getOption("cl.cores", length(data_norms)))
-parallel::clusterCall(cl, function() library("ssenet"))
+parallel::clusterCall(cl, function() library("BIRSBIO2020.seqFISH.SSEnet"))
 parallel::clusterCall(cl, function() library("dplyr"))
 parallel::clusterExport(cl, varlist = c("data_norms", "cortex", "qnmLabels", "alpha", "lambda", 'lambda_nfolds', "family", "filter", "keepVar", "max.iter", "perc.full", "thr.conf", "useObsWeights"), envir = environment())
 method_dataNorm_comp <- parallel::parLapply(cl, as.list(data_norms), function(data_norm, cortex, qnmLabels, alpha, lambda, lambda_nfolds, family, filter, keepVar, max.iter, perc.full, thr.conf, useObsWeights) {
-  fitEnet <- enet(xtrain = cortex[[data_norm]]$scrnaseq, 
+  fitEnet <- BIRSBIO2020.seqFISH.SSEnet::enet(xtrain = cortex[[data_norm]]$scrnaseq, 
                   ytrain = qnmLabels$scrnaseq$V1, 
                   alpha = alpha, 
                   lambda = lambda, 
@@ -125,7 +124,7 @@ method_dataNorm_comp <- parallel::parLapply(cl, as.list(data_norms), function(da
                   ytest= qnmLabels$seqfish$V3)
     
     # Semi-supervised Elastic Net 
-    fitSSEnet <- ssenet(xtrain = rbind(cortex[[data_norm]]$scrnaseq, cortex[[data_norm]]$seqfish), 
+    fitSSEnet <- BIRSBIO2020.seqFISH.SSEnet::ssenet(xtrain = rbind(cortex[[data_norm]]$scrnaseq, cortex[[data_norm]]$seqfish), 
                       ytrain= factor(c(as.character(qnmLabels$scrnaseq$V1), 
                                        rep(NA, nrow(cortex[[data_norm]]$seqfish)))), 
                       alpha = alpha, 
@@ -154,7 +153,7 @@ allpreds <- do.call(rbind, method_dataNorm_comp$preds) %>%
   mutate(row_names = rep(1:nrow(cortex$raw$seqfish), length(cortex)*2+1)) %>% 
   spread(data_type_method, celltypes) %>% 
   dplyr::select(-row_names)
-
+head(allpreds)
 ```
 
 ## Compare methods and normalizations
@@ -183,20 +182,30 @@ heatmap(gower.dist(t(allpreds)))
 
 ## PCA
 
-```{r}
-pcs <- prcomp((1-gower.dist(t(allpreds))), scale. = TRUE, rank. = 2)
+```{r, fig.width=7, fig.height=4}
+dims <- gower.dist(t(allpreds))
+loc <- cmdscale(dims)
 
-pcs$x %>% 
-  as.data.frame() %>% 
-  mutate(Normalization = data_type, Method = method) %>% 
-  ggplot(aes(x = PC1, y = PC2, color = Normalization, shape = Method, group = Normalization)) +
-  geom_point() +
-  geom_line() +
-  theme(legend.position = "bottom") +
-  ggtitle("Cell-type predictions using different classifiers and data normalizations") +
+dat <- data.frame(dim1 = loc[,1], dim2 = loc[,2]) %>% 
+  mutate(Normalization = data_type, Method = method)
+cir_raw <- filter(dat, Normalization == "raw")
+cir_cpm <- filter(dat, Normalization == "cpm")
+cir_qnm <- filter(dat, Normalization == "qnm")
+cir_pls <- filter(dat, Normalization == "cpm_pls")
+cir_eigen <- filter(dat, Normalization == "cpm_eigen")
+cir_combat <- filter(dat, Normalization == "cpm_combat")
+ggplot(dat, aes(x = dim1, y = dim2, color = Normalization, shape = Method, group = Normalization)) +
+  geom_point(size = 2) +
   theme_bw() +
-  xlab(paste0("PC1 (", round(100*pcs$sdev[1]/sum(pcs$sdev), 0), "%)")) +
-  ylab(paste0("PC2 (", round(100*pcs$sdev[2]/sum(pcs$sdev), 0), "%)"))
+  xlab("MDS Dim1") +
+  ylab("MDS Dim2") + 
+  geom_encircle(data = cir_raw, linetype = 1, spread = 0.01, s_shape=0.2, expand=0.05, color = "black") + 
+  geom_encircle(data = cir_cpm, linetype = 1, spread = 0.01, s_shape=0.2, expand=0.04, color = "black") + 
+  geom_encircle(data = cir_qnm, linetype = 2, spread = 0.01, s_shape=0.1, expand=0.02, color = "black") + 
+  geom_encircle(data = cir_pls, linetype = 2, spread = 0.001, s_shape=0.1, expand=0.02, color = "black") + 
+  geom_encircle(data = cir_eigen, linetype = 2, spread = 0.001, s_shape=0.1, expand=0.02, color = "black") + 
+  geom_encircle(data = cir_combat, linetype = 2, spread = 0.001, s_shape=0.1, expand=0.02, color = "black") +
+  theme(legend.position = "bottom") 
 
 ```
 

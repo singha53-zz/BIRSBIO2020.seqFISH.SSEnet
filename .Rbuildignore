@@ -4,3 +4,5 @@ Dockerfile
 _pkgdown.yml
 ^doc$
 ^Meta$
+^.*\.Rproj$
+^\.Rproj\.user$

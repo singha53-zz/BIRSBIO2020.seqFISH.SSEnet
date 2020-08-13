@@ -9,7 +9,7 @@ vignette: >
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, cache = TRUE)
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 if (!requireNamespace("here", quietly = TRUE))
     install.packages("here")
 if (!requireNamespace("tidyverse", quietly = TRUE))
@@ -194,22 +194,6 @@ fviz_pca_ind(pca, label="none", habillage=data_type,
 ```{r}
 cpm_eigen_scrnaseq <- scale(t(cpm_scrnaseq_data))/pca(t(cpm_scrnaseq_data), scale=TRUE)$sdev[1]
 cpm_eigen_seqfish <- scale(t(cpm_seqfish_data))/pca(t(cpm_seqfish_data), scale=TRUE)$sdev[1]
-cpm <- rbind(cpm_eigen_scrnaseq, cpm_eigen_seqfish)
-
-pca_eigenvalue <- prcomp(cpm, scale. = FALSE)
-
-fviz_pca_ind(pca_eigenvalue, label="none", habillage=data_type,
-  addEllipses=TRUE, ellipse.level=0.80) +
-  theme(legend.position = "bottom") +
-  ggtitle("PCA applied to scRNA-seq + seqFISH (log2 CPM scaled by the Eigenvalue)")
-
-pca_eigenvalue$x[1:ncol(cpm_scrnaseq_data), 1] <- -pca_eigenvalue$x[1:ncol(cpm_scrnaseq_data), 1]
-pca_eigenvalue$x %>% 
-  as.data.frame() %>% 
-  mutate(data_type = data_type) %>% 
-  ggplot(aes(x = PC1, y = PC2, color=data_type)) +
-  geom_point() +
-  stat_ellipse()
 
 ```
 
@@ -300,8 +284,6 @@ cortex <- list(raw = list(scrnaseq = t(scrnaseq_data), seqfish = t(seqfish_data)
      cpm = list(scrnaseq = t(cpm_scrnaseq_data), seqfish = t(cpm_seqfish_data)),
      cpm_combat = list(scrnaseq = cpm_combat_scrnaseq, seqfish = cpm_combat_seqfish),
      cpm_eigen = list(scrnaseq = cpm_eigen_scrnaseq, seqfish = cpm_eigen_seqfish),
-     cpm_pca = list(scrnaseq = pca_eigenvalue$x[rownames(cpm_eigen_scrnaseq), ], 
-                    seqfish = pca_eigenvalue$x[rownames(cpm_eigen_seqfish), ]),
      cpm_pls = list(scrnaseq = pls_eigenvalue$loadings$X, seqfish = pls_eigenvalue$loadings$Y))
 
 qnmLabels <- list(scrnaseq=q_scrnaseq_cellLabels, 

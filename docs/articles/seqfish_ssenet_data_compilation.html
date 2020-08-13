@@ -175,7 +175,6 @@
   <span class="fu">ylab</span>(<span class="st">"Frequency"</span>) +
   <span class="fu">xlab</span>(<span class="st">"Gene expression"</span>) +
   <span class="fu">ggtitle</span>(<span class="st">"Histograms of scRNA-seq and seqFISH data"</span>)</pre></body></html></div>
-<pre><code>## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
 <p><img src="seqfish_ssenet_data_compilation_files/figure-html/unnamed-chunk-3-1.png" width="700"></p>
 </div>
 <div id="pca" class="section level3">
@@ -214,12 +213,6 @@
   <span class="fu">ylab</span>(<span class="st">"Frequency"</span>) +
   <span class="fu">xlab</span>(<span class="st">"Gene expression"</span>) +
   <span class="fu">ggtitle</span>(<span class="st">"Histograms of scRNA-seq and seqFISH data"</span>)</pre></body></html></div>
-<pre><code>## Warning: Transformation introduced infinite values in continuous x-axis
-
-## Warning: Transformation introduced infinite values in continuous x-axis</code></pre>
-<pre><code>## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
-<pre><code>## Warning: Removed 169007 rows containing non-finite values (stat_bin).</code></pre>
-<pre><code>## Warning: Removed 169007 rows containing non-finite values (stat_density).</code></pre>
 <p><img src="seqfish_ssenet_data_compilation_files/figure-html/unnamed-chunk-5-1.png" width="700"></p>
 </div>
 <div id="pca-1" class="section level3">
@@ -279,36 +272,14 @@
 <h3 class="hasAnchor">
 <a href="#eigenvalue-correction" class="anchor"></a>Eigenvalue correction</h3>
 <div class="sourceCode"><html><body><pre class="r"><span class="no">cpm_eigen_scrnaseq</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/scale.html">scale</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/t.html">t</a></span>(<span class="no">cpm_scrnaseq_data</span>))/<span class="fu">pca</span>(<span class="fu"><a href="https://rdrr.io/r/base/t.html">t</a></span>(<span class="no">cpm_scrnaseq_data</span>), <span class="kw">scale</span><span class="kw">=</span><span class="fl">TRUE</span>)$<span class="no">sdev</span>[<span class="fl">1</span>]
-<span class="no">cpm_eigen_seqfish</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/scale.html">scale</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/t.html">t</a></span>(<span class="no">cpm_seqfish_data</span>))/<span class="fu">pca</span>(<span class="fu"><a href="https://rdrr.io/r/base/t.html">t</a></span>(<span class="no">cpm_seqfish_data</span>), <span class="kw">scale</span><span class="kw">=</span><span class="fl">TRUE</span>)$<span class="no">sdev</span>[<span class="fl">1</span>]
-<span class="no">cpm</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">rbind</a></span>(<span class="no">cpm_eigen_scrnaseq</span>, <span class="no">cpm_eigen_seqfish</span>)
-
-<span class="no">pca_eigenvalue</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/prcomp.html">prcomp</a></span>(<span class="no">cpm</span>, <span class="kw">scale.</span> <span class="kw">=</span> <span class="fl">FALSE</span>)
-
-<span class="fu">fviz_pca_ind</span>(<span class="no">pca_eigenvalue</span>, <span class="kw">label</span><span class="kw">=</span><span class="st">"none"</span>, <span class="kw">habillage</span><span class="kw">=</span><span class="no">data_type</span>,
-  <span class="kw">addEllipses</span><span class="kw">=</span><span class="fl">TRUE</span>, <span class="kw">ellipse.level</span><span class="kw">=</span><span class="fl">0.80</span>) +
-  <span class="fu">theme</span>(<span class="kw">legend.position</span> <span class="kw">=</span> <span class="st">"bottom"</span>) +
-  <span class="fu">ggtitle</span>(<span class="st">"PCA applied to scRNA-seq + seqFISH (log2 CPM scaled by the Eigenvalue)"</span>)</pre></body></html></div>
-<p><img src="seqfish_ssenet_data_compilation_files/figure-html/unnamed-chunk-9-1.png" width="700"></p>
-<div class="sourceCode"><html><body><pre class="r"><span class="no">pca_eigenvalue</span>$<span class="no">x</span>[<span class="fl">1</span>:<span class="fu"><a href="https://rdrr.io/r/base/nrow.html">ncol</a></span>(<span class="no">cpm_scrnaseq_data</span>), <span class="fl">1</span>] <span class="kw">&lt;-</span> -<span class="no">pca_eigenvalue</span>$<span class="no">x</span>[<span class="fl">1</span>:<span class="fu"><a href="https://rdrr.io/r/base/nrow.html">ncol</a></span>(<span class="no">cpm_scrnaseq_data</span>), <span class="fl">1</span>]
-<span class="no">pca_eigenvalue</span>$<span class="no">x</span> <span class="kw">%&gt;%</span>
-  <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span>() <span class="kw">%&gt;%</span>
-  <span class="fu">mutate</span>(<span class="kw">data_type</span> <span class="kw">=</span> <span class="no">data_type</span>) <span class="kw">%&gt;%</span>
-  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="kw">x</span> <span class="kw">=</span> <span class="no">PC1</span>, <span class="kw">y</span> <span class="kw">=</span> <span class="no">PC2</span>, <span class="kw">color</span><span class="kw">=</span><span class="no">data_type</span>)) +
-  <span class="fu">geom_point</span>() +
-  <span class="fu">stat_ellipse</span>()</pre></body></html></div>
-<p><img src="seqfish_ssenet_data_compilation_files/figure-html/unnamed-chunk-9-2.png" width="700"></p>
+<span class="no">cpm_eigen_seqfish</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/scale.html">scale</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/t.html">t</a></span>(<span class="no">cpm_seqfish_data</span>))/<span class="fu">pca</span>(<span class="fu"><a href="https://rdrr.io/r/base/t.html">t</a></span>(<span class="no">cpm_seqfish_data</span>), <span class="kw">scale</span><span class="kw">=</span><span class="fl">TRUE</span>)$<span class="no">sdev</span>[<span class="fl">1</span>]</pre></body></html></div>
 </div>
 <div id="combat-correction" class="section level3">
 <h3 class="hasAnchor">
 <a href="#combat-correction" class="anchor"></a>Combat correction</h3>
 <div class="sourceCode"><html><body><pre class="r"><span class="no">cpm</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span>(<span class="no">cpm_scrnaseq_data</span>, <span class="no">cpm_seqfish_data</span>)
 <span class="no">combat_cpm</span> <span class="kw">=</span> <span class="fu">ComBat</span>(<span class="kw">dat</span><span class="kw">=</span><span class="no">cpm</span>, <span class="kw">batch</span><span class="kw">=</span><span class="no">data_type</span>, <span class="kw">mod</span><span class="kw">=</span><span class="kw">NULL</span>, <span class="kw">par.prior</span><span class="kw">=</span><span class="fl">TRUE</span>, <span class="kw">prior.plots</span><span class="kw">=</span><span class="fl">FALSE</span>)</pre></body></html></div>
-<pre><code>## Found2batches</code></pre>
-<pre><code>## Adjusting for0covariate(s) or covariate level(s)</code></pre>
 <pre><code>## Standardizing Data across genes</code></pre>
-<pre><code>## Fitting L/S model and finding priors</code></pre>
-<pre><code>## Finding parametric adjustments</code></pre>
-<pre><code>## Adjusting the Data</code></pre>
 <div class="sourceCode"><html><body><pre class="r"><span class="no">cpm_combat_scrnaseq</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/t.html">t</a></span>(<span class="no">combat_cpm</span>[, <span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span>(<span class="no">cpm_scrnaseq_data</span>)])
 <span class="no">cpm_combat_seqfish</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/t.html">t</a></span>(<span class="no">combat_cpm</span>[, <span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span>(<span class="no">cpm_seqfish_data</span>)])
 
@@ -388,8 +359,6 @@
      <span class="kw">cpm</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw">scrnaseq</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/t.html">t</a></span>(<span class="no">cpm_scrnaseq_data</span>), <span class="kw">seqfish</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/t.html">t</a></span>(<span class="no">cpm_seqfish_data</span>)),
      <span class="kw">cpm_combat</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw">scrnaseq</span> <span class="kw">=</span> <span class="no">cpm_combat_scrnaseq</span>, <span class="kw">seqfish</span> <span class="kw">=</span> <span class="no">cpm_combat_seqfish</span>),
      <span class="kw">cpm_eigen</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw">scrnaseq</span> <span class="kw">=</span> <span class="no">cpm_eigen_scrnaseq</span>, <span class="kw">seqfish</span> <span class="kw">=</span> <span class="no">cpm_eigen_seqfish</span>),
-     <span class="kw">cpm_pca</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw">scrnaseq</span> <span class="kw">=</span> <span class="no">pca_eigenvalue</span>$<span class="no">x</span>[<span class="fu"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span>(<span class="no">cpm_eigen_scrnaseq</span>), ],
-                    <span class="kw">seqfish</span> <span class="kw">=</span> <span class="no">pca_eigenvalue</span>$<span class="no">x</span>[<span class="fu"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span>(<span class="no">cpm_eigen_seqfish</span>), ]),
      <span class="kw">cpm_pls</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw">scrnaseq</span> <span class="kw">=</span> <span class="no">pls_eigenvalue</span>$<span class="no">loadings</span>$<span class="no">X</span>, <span class="kw">seqfish</span> <span class="kw">=</span> <span class="no">pls_eigenvalue</span>$<span class="no">loadings</span>$<span class="no">Y</span>))
 
 <span class="no">qnmLabels</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw">scrnaseq</span><span class="kw">=</span><span class="no">q_scrnaseq_cellLabels</span>,
@@ -398,16 +367,9 @@
 <span class="no">coord</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html">read.table</a></span>(<span class="kw pkg">here</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/here/man/here.html">here</a></span>(<span class="st">"inst"</span>, <span class="st">"extdata"</span>, <span class="st">"fcortex.coordinates.txt"</span>), <span class="kw">sep</span><span class="kw">=</span><span class="st">' '</span>, <span class="kw">header</span> <span class="kw">=</span> <span class="fl">FALSE</span>)[, <span class="fl">3</span>:<span class="fl">4</span>]
 <span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span>(<span class="no">coord</span>) <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"x"</span>, <span class="st">"y"</span>)
 
-<span class="kw pkg">usethis</span><span class="kw ns">::</span><span class="fu"><a href="https://usethis.r-lib.org/reference/use_data.html">use_data</a></span>(<span class="no">cortex</span>, <span class="kw">overwrite</span> <span class="kw">=</span> <span class="fl">TRUE</span>)</pre></body></html></div>
-<pre><code>## ✓ Setting active project to '/Users/asingh/Documents/ubc/Conferences/2020/Banff/BIRSBIO2020.seqFISH.SSEnet'</code></pre>
-<pre><code>## ✓ Saving 'cortex' to 'data/cortex.rda'</code></pre>
-<pre><code>## ● Document your data (see 'https://r-pkgs.org/data.html')</code></pre>
-<div class="sourceCode"><html><body><pre class="r"><span class="kw pkg">usethis</span><span class="kw ns">::</span><span class="fu"><a href="https://usethis.r-lib.org/reference/use_data.html">use_data</a></span>(<span class="no">qnmLabels</span>, <span class="kw">overwrite</span> <span class="kw">=</span> <span class="fl">TRUE</span>)</pre></body></html></div>
-<pre><code>## ✓ Saving 'qnmLabels' to 'data/qnmLabels.rda'
-## ● Document your data (see 'https://r-pkgs.org/data.html')</code></pre>
-<div class="sourceCode"><html><body><pre class="r"><span class="kw pkg">usethis</span><span class="kw ns">::</span><span class="fu"><a href="https://usethis.r-lib.org/reference/use_data.html">use_data</a></span>(<span class="no">coord</span>, <span class="kw">overwrite</span> <span class="kw">=</span> <span class="fl">TRUE</span>)</pre></body></html></div>
-<pre><code>## ✓ Saving 'coord' to 'data/coord.rda'
-## ● Document your data (see 'https://r-pkgs.org/data.html')</code></pre>
+<span class="kw pkg">usethis</span><span class="kw ns">::</span><span class="fu"><a href="https://usethis.r-lib.org/reference/use_data.html">use_data</a></span>(<span class="no">cortex</span>, <span class="kw">overwrite</span> <span class="kw">=</span> <span class="fl">TRUE</span>)
+<span class="kw pkg">usethis</span><span class="kw ns">::</span><span class="fu"><a href="https://usethis.r-lib.org/reference/use_data.html">use_data</a></span>(<span class="no">qnmLabels</span>, <span class="kw">overwrite</span> <span class="kw">=</span> <span class="fl">TRUE</span>)
+<span class="kw pkg">usethis</span><span class="kw ns">::</span><span class="fu"><a href="https://usethis.r-lib.org/reference/use_data.html">use_data</a></span>(<span class="no">coord</span>, <span class="kw">overwrite</span> <span class="kw">=</span> <span class="fl">TRUE</span>)</pre></body></html></div>
 </div>
 </div>
 <div class="footnotes">
