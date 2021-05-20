@@ -19,7 +19,7 @@ library(UpSetR);
 library(StatMatch) # gower.dist
 library(factoextra) # devtools::install_github("kassambara/factoextra")
 library(NMF) ## aheatmap
-library(ggalt)
+library(ggalt);
 library("BIRSBIO2020.seqFISH.SSEnet")
 data("cortex"); data("qnmLabels"); data("coord");
 ```
@@ -81,8 +81,8 @@ lambda = NULL;
 lambda_nfolds = 3;
 family = "multinomial";
 filter = "none";
-max.iter = 10;
-perc.full = 1;
+max.iter = 20;
+perc.full = 0.7;
 thr.conf = 0.5;
 keepVar = NULL;
 weights = NULL;
@@ -141,7 +141,7 @@ method_dataNorm_comp <- parallel::parLapply(cl, as.list(data_norms), function(da
              ssenet=fitSSEnet$ytrainImputed$pred[-c(1:nrow(cortex[[data_norm]]$scrnaseq))]) %>% 
     mutate(data_type=data_norm),
     panels = list(enet=fitEnet$enet.panel, ssenet=fitSSEnet$enet.panel))
-}, cortex, qnmLabels, alpha, lambda, lambda_nfolds, family, filter, keepVar, max.iter, perc.full, thr.conf, useObsWeights) %>% ssenet::zip_nPure()
+}, cortex, qnmLabels, alpha, lambda, lambda_nfolds, family, filter, keepVar, max.iter, perc.full, thr.conf, useObsWeights) %>% BIRSBIO2020.seqFISH.SSEnet::zip_nPure()
 parallel::stopCluster(cl)
 
 
@@ -180,11 +180,13 @@ heatmap(gower.dist(t(allpreds)))
 
 ```
 
-## PCA
+## Multidimensional scaling plot
 
-```{r, fig.width=7, fig.height=4}
+```{r, fig.width=7, fig.height=5}
+head(allpreds)
 dims <- gower.dist(t(allpreds))
 loc <- cmdscale(dims)
+head(loc)
 
 dat <- data.frame(dim1 = loc[,1], dim2 = loc[,2]) %>% 
   mutate(Normalization = data_type, Method = method)

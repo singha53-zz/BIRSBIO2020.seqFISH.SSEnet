@@ -74,7 +74,7 @@ ssenet = function (xtrain, ytrain, alpha, lambda = NULL, lambda_nfolds=3, family
     lambda = lambda
   }
 
-  ytrainImputed <- ssenet::imputeLabels(x2train, ytrain, alpha, lambda, lambda_nfolds, family, max.iter, perc.full, thr.conf, useObsWeights)
+  ytrainImputed <- BIRSBIO2020.seqFISH.SSEnet::imputeLabels(x2train, ytrain, alpha, lambda, lambda_nfolds, family, max.iter, perc.full, thr.conf, useObsWeights)
   assertthat::assert_that(any(table(ytrainImputed$pred) > 3), msg = "3 obs must be present for a given cell-type")
 
   # remove sample with 1 or 0 observations
@@ -110,7 +110,7 @@ ssenet = function (xtrain, ytrain, alpha, lambda = NULL, lambda_nfolds=3, family
     probs <- glmnet::predict.multnet(fit, newx = xtest[, colnames(x2train)], s = lambda, type = "response")
     predictResponse <- unlist(glmnet::predict.multnet(fit, newx = xtest, s = lambda, type = "class"))
     if (family == "binomial") {
-      perfTest <- ssenet::tperformance(weights = as.numeric(as.matrix(probs)), trueLabels = ytest)
+      perfTest <- BIRSBIO2020.seqFISH.SSEnet::tperformance(weights = as.numeric(as.matrix(probs)), trueLabels = ytest)
     } else {
       mat <- table(factor(as.character(predictResponse),
         levels = levels(ytest)), ytest)

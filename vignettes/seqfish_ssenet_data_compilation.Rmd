@@ -296,5 +296,7 @@ usethis::use_data(cortex, overwrite = TRUE)
 usethis::use_data(qnmLabels, overwrite = TRUE)
 usethis::use_data(coord, overwrite = TRUE)
 
+
+rapply(cortex, dim)
 ```
 

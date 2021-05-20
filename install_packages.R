@@ -1,0 +1,27 @@
+# install devtools to install CRAN packages
+install.packages("devtools")
+require("devtools")
+
+if (!requireNamespace("BiocManager", quietly = TRUE))
+  install.packages("BiocManager")
+BiocManager::install(version="3.12")
+
+BiocManager::install("limma")
+BiocManager::install("MultiAssayExperiment")
+BiocManager::install("SpatialExperiment")
+BiocManager::install("SingleCellMultiModal")
+
+devtools::install_version("ggplot2", version = "3.3.1", repos = "http://cran.us.r-project.org")
+devtools::install_version("dplyr", version = "1.0.0", repos = "http://cran.us.r-project.org")
+devtools::install_version("knitr", version = "1.33", repos = "http://cran.us.r-project.org")
+devtools::install_version("glmnet", version = "2.0-18", repos = "http://cran.us.r-project.org")
+devtools::install_version("pROC", version = "1.15.3", repos = "http://cran.us.r-project.org")
+devtools::install_version("OptimalCutpoints", version = "1.1-4", repos = "http://cran.us.r-project.org")
+devtools::install_version("clue", version = "0.3-57", repos = "http://cran.us.r-project.org")
+devtools::install_version("caret", version = "6.0-84", repos = "http://cran.us.r-project.org")
+devtools::install_version("ggalt", version = "0.4.0", repos = "http://cran.us.r-project.org")
+devtools::install_version("foreign", version = "0.8-75", repos = "http://cran.us.r-project.org")
+devtools::install_version("parallel", version = "3.6.1", repos = "http://cran.us.r-project.org")
+devtools::install_version("magrittr", version = "1.5", repos = "http://cran.us.r-project.org")
+devtools::install_version("tidyr", version = "0.8.3", repos = "http://cran.us.r-project.org")
+devtools::install_version("dplyr", version = "0.8.3", repos = "http://cran.us.r-project.org")

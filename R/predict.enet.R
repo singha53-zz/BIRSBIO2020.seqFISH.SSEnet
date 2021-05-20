@@ -25,19 +25,19 @@ predict.enet = function (object, M = 5, iter = 10,
   if (M > 1) {
     folds <- lapply(1:iter, function(i) caret::createFolds(y, k = M))
     cl <- parallel::makeCluster(mc <- getOption("cl.cores", ncores))
-    parallel::clusterCall(cl, function() library("ssenet"))
+    parallel::clusterCall(cl, function() library("BIRSBIO2020.seqFISH.SSEnet"))
     parallel::clusterExport(cl, varlist = c("X", "y", "alpha", "lambda", 'lambda_nfolds', "folds", "progressBar",
       "family", "filter", "topranked", "keepVar", "weights"), envir = environment())
     cv <- parallel::parLapply(cl, folds, function(foldsi,
       X, y, alpha, lambda, lambda_nfolds, progressBar, family, filter,
       topranked, keepVar, weights) {
-      ssenet::enetCV(X = X, y = y, alpha = alpha, lambda = lambda,
+      BIRSBIO2020.seqFISH.SSEnet::enetCV(X = X, y = y, alpha = alpha, lambda = lambda,
         lambda_nfolds = lambda_nfolds,
         folds = foldsi, progressBar = progressBar,
         family = family, filter = filter, topranked = topranked,
         keepVar=keepVar, weights = weights)
     }, X, y, alpha, lambda, lambda_nfolds, progressBar, family, filter,
-      topranked, keepVar, weights) %>% ssenet::zip_nPure()
+      topranked, keepVar, weights) %>% BIRSBIO2020.seqFISH.SSEnet::zip_nPure()
     parallel::stopCluster(cl)
     perf <- do.call(rbind, cv$perf) %>% as.data.frame %>%
       tidyr::gather(ErrName, Err) %>% dplyr::group_by(ErrName) %>%
@@ -84,7 +84,7 @@ enetCV = function (X, y, alpha, lambda, lambda_nfolds, folds, progressBar, famil
     xtest <- X[omit, , drop = FALSE]
     ytest = y[omit]
 
-    fit <- ssenet::enet(xtrain=xtrain, ytrain=ytrain, alpha = alpha, lambda = lambda,
+    fit <- BIRSBIO2020.seqFISH.SSEnet::enet(xtrain=xtrain, ytrain=ytrain, alpha = alpha, lambda = lambda,
       lambda_nfolds = lambda_nfolds,
       family = family, xtest = xtest, ytest = ytest, filter = filter,
       topranked = topranked, keepVar = keepVar, weights = weights[-omit])
@@ -96,7 +96,7 @@ enetCV = function (X, y, alpha, lambda, lambda_nfolds, folds, progressBar, famil
   if (family == "binomial") {
     probs <- unlist(probs)
     trueLabels = y[unlist(folds)]
-    perf <- ssenet::tperformance(weights = probs, trueLabels = trueLabels)
+    perf <- BIRSBIO2020.seqFISH.SSEnet::tperformance(weights = probs, trueLabels = trueLabels)
   }else {
     trueLabels = y[unlist(folds)]
     mat <- table(factor(predictResponse,

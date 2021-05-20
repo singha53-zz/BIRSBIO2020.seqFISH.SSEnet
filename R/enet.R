@@ -67,7 +67,7 @@ enet = function (xtrain, ytrain, alpha, lambda = NULL, lambda_nfolds=3, family, 
   fit <- do.call(glmnet::glmnet, c(glmnet_default_params, args_glmnet))
   cv.fit <- do.call(glmnet::cv.glmnet, c(cvglmnet_default_params, args_cvglmnet))
   lambda <- ifelse(is.null(lambda), cv.fit$lambda.1se, lambda)
-  features <- ssenet::extractFeatures(fit, lambda, family)
+  features <- BIRSBIO2020.seqFISH.SSEnet::extractFeatures(fit, lambda, family)
 
 
   # Apply model to test data if provided
@@ -75,7 +75,7 @@ enet = function (xtrain, ytrain, alpha, lambda = NULL, lambda_nfolds=3, family, 
     probs <- glmnet::predict.multnet(fit, newx = xtest[, colnames(x2train)], s = lambda, type = "response")
     predictResponse <- unlist(glmnet::predict.multnet(fit, newx = xtest, s = lambda, type = "class"))
     if (family == "binomial") {
-      perfTest <- ssenet::tperformance(weights = as.numeric(as.matrix(probs)), trueLabels = ytest)
+      perfTest <- BIRSBIO2020.seqFISH.SSEnet::tperformance(weights = as.numeric(as.matrix(probs)), trueLabels = ytest)
     } else {
       mat <- table(factor(as.character(predictResponse),
         levels = levels(ytest)), ytest)

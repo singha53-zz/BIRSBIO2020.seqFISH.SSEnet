@@ -8,3 +8,7 @@ README_cache
 inst/extdata/GSE71585_RefSeq_counts.csv
 doc
 Meta
+.bash_history
+.cache/
+.config/
+.local/
